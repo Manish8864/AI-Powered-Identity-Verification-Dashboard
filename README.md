@@ -1,115 +1,244 @@
-# KYC & Compliance Management
+# YC & Compliance Management
 
-A full-stack demonstration of a customer verification and compliance review
-workflow. It uses fictional customer data and simulated risk scoring; it is not
-an identity verification, fraud detection, or regulatory decision service.
+A full-stack web application demonstrating a customer verification and compliance review workflow. The platform allows customers to submit individual or business onboarding applications, upload supporting documents, track application status, and receive updates. Administrators can review applications, evaluate simulated screening results, request corrections, and maintain an auditable review history.
 
-## Features
+**Important:** This project uses fictional customer data and simulated risk scoring. It is a demonstration project, not a real identity verification, fraud detection, or regulatory decision-making service.
 
-- React + TypeScript dashboard with separate customer and administrator views.
-- JWT authentication, bcrypt password hashing, role-protected API operations.
-- Draft and submitted verification applications with review history.
-- Individual and India-focused business onboarding profiles, including registration identifier and activity fields.
-- Business document categories tailored to companies, LLPs, partnerships, sole proprietorships, trusts/NGOs, and other entities.
-- Private, authenticated demo document upload and retrieval.
-- Transparent deterministic risk scoring with explanations and disclaimer.
-- Canned Alpha, Beta, and Gamma provider simulations with normalized check outcomes.
-- Per-check reviewer decisions, correction requests, notes, and an auditable case timeline.
-- MongoDB-backed dashboard metrics, customer/application search and reviews.
+## Key Features
+
+### 1. Authentication & Authorization
+- JWT-based authentication and authorization.
+- Secure password hashing using bcrypt.
+- Separate customer and administrator dashboards.
+- Role-based access control for protected API operations.
+
+### 2. Customer Onboarding
+- Create, save, and update draft applications.
+- Submit verification applications.
+- Individual and India-focused business onboarding workflows.
+- Business registration identifiers and business activity information.
+- Support for different business entity types, including:
+  - Private and public companies
+  - LLPs
+  - Partnerships
+  - Sole proprietorships
+  - Trusts and NGOs
+  - Other business entities
+- Application status tracking and review history.
+
+### 3. Document Management
+- Private and authenticated document uploads.
+- Document retrieval and deletion through protected endpoints.
+- Business-specific document categories.
+- File type and size restrictions.
+- Owner-scoped document access.
+
+### 4. Risk Assessment
+- Transparent and deterministic risk scoring.
+- Rule-based completeness and consistency evaluation.
+- Risk score explanations.
+- Clear indication of simulated assessment results.
+
+### 5. Administrator & Compliance Review
+- Administrator dashboard with MongoDB-backed metrics.
+- Customer and application search.
+- Application review and status management.
+- Simulated screening through three providers:
+  - **Provider Alpha:** Completed simulated response.
+  - **Provider Beta:** Simulated timeout and inconclusive data checks.
+  - **Provider Gamma:** Simulated manual-review response.
+- Normalized screening outcomes.
+- Individual reviewer decisions for each returned check.
+- Correction requests and internal review notes.
+- Auditable application timeline.
+
+### 6. Notifications
 - In-app application status notifications.
-- Embeddable React verification widget with configurable branding and callbacks.
+- Customer notification list.
+- Notification read-state management.
 
-## Technology
+### 7. Embeddable React Verification Widget
+- Reusable React verification widget.
+- Configurable branding and theme.
+- Customizable workflow steps and labels.
+- Success and error callbacks.
+- Resume editable application drafts.
+- Responsive design for mobile and tablet devices.
 
-- Frontend: React, TypeScript, Vite, Tailwind CSS, React Router, Axios,
-  React Hook Form, Zod, Recharts, Lucide React.
-- Backend: Node.js, Express, TypeScript, Mongoose, MongoDB, JWT, bcryptjs,
-  Multer, Zod, Helmet, and Express Rate Limit.
+## Technology Stack
 
-## Project layout
+### Frontend
+- React.js
+- TypeScript
+- Vite
+- Tailwind CSS
+- React Router
+- Axios
+- React Hook Form
+- Zod
+- Recharts
+- Lucide React
+
+### Backend
+- Node.js
+- Express.js
+- TypeScript
+- MongoDB
+- Mongoose
+- JWT
+- bcryptjs
+- Multer
+- Zod
+- Helmet
+- Express Rate Limit
+
+## Project Structure
 
 ```text
-frontend/
-  src/
-    components/  context/  hooks/  pages/  services/  types/  utils/
-backend/
-  src/
-    config/  controllers/  middleware/  models/  routes/
-    services/  validators/  types/
+YC-Compliance-Management/
+│
+├── frontend/
+│   └── src/
+│       ├── components/
+│       ├── context/
+│       ├── hooks/
+│       ├── pages/
+│       ├── services/
+│       ├── types/
+│       └── utils/
+│
+├── backend/
+│   └── src/
+│       ├── config/
+│       ├── controllers/
+│       ├── middleware/
+│       ├── models/
+│       ├── routes/
+│       ├── services/
+│       ├── validators/
+│       └── types/
+│
+├── package.json
+└── README.md
 ```
 
-## Requirements and setup
+## Requirements
 
-- Node.js 20 or newer and npm 10 or newer.
-- MongoDB running locally or a MongoDB Atlas connection string.
+Make sure the following are installed:
 
-1. Copy `backend/.env.example` to `backend/.env` and set a unique JWT secret,
-   MongoDB URI, and administrator password.
-2. Copy `frontend/.env.example` to `frontend/.env`.
-3. Install dependencies from the project root:
+- Node.js 20 or newer
+- npm 10 or newer
+- MongoDB local installation or MongoDB Atlas account
 
-   ```sh
-   npm install
-   ```
+## Installation & Setup
 
-4. Start the API and frontend in separate terminals:
+### 1. Clone the Repository
 
-   ```sh
-   npm run dev:server
-   npm run dev:client
-   ```
-
-5. Open `http://localhost:5173`. The API uses `http://localhost:5000` by default.
-   The frontend uses port `5173` to match the backend's default `CLIENT_URL`.
-   If you choose a different frontend origin, set `CLIENT_URL` in
-   `backend/.env` to that exact origin and restart the API. Vite will report an
-   error rather than silently switching ports if `5173` is already occupied.
-
-Build and type-check both workspaces:
-
-```sh
-npm run build
-npm run typecheck
+```bash
+git clone https://github.com/YOUR_USERNAME/kyc-compliance-management.git
+cd kyc-compliance-management
 ```
 
-## Demo administrator and seed data
+### 2. Install Dependencies
 
-Configure `ADMIN_EMAIL` and `ADMIN_PASSWORD` in `backend/.env` before seeding.
-The example values (`admin@example.com` / `change_this_password`) are local
-development placeholders only; replace them before running the seeder and never
-use them in a deployed environment.
+```bash
+npm install
+```
 
-Run the seed command after the backend workspace exposes it:
+### 3. Configure Environment Variables
 
-```sh
+Create the backend environment file:
+
+```bash
+cp backend/.env.example backend/.env
+```
+
+Configure the following variables:
+
+| Variable | Description |
+|---|---|
+| PORT | Backend server port (default: 5000) |
+| MONGO_URI | MongoDB connection string |
+| JWT_SECRET | Unique JWT signing secret (minimum 32 characters) |
+| CLIENT_URL | Frontend origin for CORS |
+| ADMIN_EMAIL | Administrator email |
+| ADMIN_PASSWORD | Administrator password (minimum 12 characters) |
+| UPLOAD_DIR | Private document upload directory |
+
+Create the frontend environment file:
+
+```bash
+cp frontend/.env.example frontend/.env
+```
+
+Configure:
+
+```env
+VITE_API_BASE_URL=http://localhost:5000/api
+```
+
+Update the MongoDB connection string and other environment variables according to your local setup.
+
+### 4. Start the Application
+
+Start the backend API:
+
+```bash
+npm run dev:server
+```
+
+Start the frontend in a separate terminal:
+
+```bash
+npm run dev:client
+```
+
+Open the application:
+
+**Frontend:** http://localhost:5173
+
+**Backend:** http://localhost:5000
+
+The frontend uses port 5173 by default to match the backend's default CLIENT_URL. If you change the frontend origin, update CLIENT_URL in backend/.env and restart the API.
+
+## Demo Administrator & Customer Accounts
+
+Run the database seeder to create fictional demonstration accounts:
+
+```bash
 npm run seed --workspace=backend
 ```
 
-The seeder creates an administrator and fictional customers, applications, and
-reviews. It does not create real identity records.
+Configure ADMIN_EMAIL and ADMIN_PASSWORD in backend/.env before running the seeder.
 
-## Admin Login
+### Administrator Login
 
-Use the administrator account created by the seeder. Configure these in
-`backend/.env` before running the seed command:
+| Field | Demo Value |
+|---|---|
+| Email | admin@example.com |
+| Password | change_this_password |
 
-- Email: `admin@example.com`
-- Password: `change_this_password`
+These are example development values. Replace them with your own credentials before seeding.
 
-These values come from the `ADMIN_EMAIL` and `ADMIN_PASSWORD` environment
-variables. Change them in `.env` before seeding if you want different admin
-credentials. Never commit real secrets to this repository.
+### Customer Login
 
-## Customer Login
+| Field | Demo Value |
+|---|---|
+| Email | customer01@example.com |
+| Password | DemoCustomer!2026 |
 
-The seeder creates fictional customer accounts, all sharing the same demo
-password:
+The seeder creates 12 fictional customer accounts:
 
-- Email: `customer01@example.com`
-- Password: `DemoCustomer!2026`
+- customer01@example.com
+- customer02@example.com
+- ...
+- customer12@example.com
 
-All customers (`customer01@example.com` through `customer12@example.com`) use
-the password `DemoCustomer!2026`. These are seeded demonstration accounts only.
+All seeded customer accounts share the same demonstration password:
+
+`DemoCustomer!2026`
+
+**Note:** These credentials are for local demonstration purposes only. Never use default credentials in a deployed environment.
 
 ## API overview
 
