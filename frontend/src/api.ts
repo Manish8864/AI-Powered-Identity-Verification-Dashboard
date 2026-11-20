@@ -6,8 +6,22 @@ export interface ApiClientOptions {
 }
 
 export function createApiClient(options: ApiClientOptions = {}) {
+  // Resolve the API base URL. When deployed on Vercel multi-service,
+  // the frontend<->backend binding injects VITE_API_BASE_URL with the
+  // backend's internal URL. Browser-based calls go through the /api/*
+  // rewrite to the same origin, so a relative/empty baseURL also works.
+  const envBaseUrl = import.meta.env.VITE_API_BASE_URL;
+  const resolvedBaseUrl =
+    options.baseURL ??
+    (envBaseUrl
+      ? (() => {
+          const normalized = envBaseUrl.replace(/\/+$/, "");
+          return normalized.endsWith("/api") ? normalized : normalized + "/api";
+        })()
+      : undefined);
+
   const client = axios.create({
-    baseURL: options.baseURL ?? import.meta.env.VITE_API_BASE_URL ?? "http://localhost:5000/api",
+    baseURL: resolvedBaseUrl,
     headers: { "Content-Type": "application/json" },
   });
 
