@@ -100,6 +100,17 @@ These values come from the `ADMIN_EMAIL` and `ADMIN_PASSWORD` environment
 variables. Change them in `.env` before seeding if you want different admin
 credentials. Never commit real secrets to this repository.
 
+## Customer Login
+
+The seeder creates fictional customer accounts, all sharing the same demo
+password:
+
+- Email: `customer01@example.com`
+- Password: `DemoCustomer!2026`
+
+All customers (`customer01@example.com` through `customer12@example.com`) use
+the password `DemoCustomer!2026`. These are seeded demonstration accounts only.
+
 ## API overview
 
 All API routes are under `/api`.
