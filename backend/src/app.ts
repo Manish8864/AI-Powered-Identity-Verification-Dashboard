@@ -29,9 +29,10 @@ app.use(async (_request, _response, next) => {
 });
 // app.use(helmet()); // Temporarily disabled — helmet ESM import issue
 const allowedOrigins = [
+  env.CLIENT_URL,
   "https://ai-powered-identity-verification-da.vercel.app",
   "http://localhost:5173",
-];
+].filter(Boolean);
 
 app.use(
   cors({
