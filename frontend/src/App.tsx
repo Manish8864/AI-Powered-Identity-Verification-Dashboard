@@ -121,10 +121,23 @@ function getDocumentCategories(workflow: "individual" | "business", entityType: 
 const dateLabel = (value?: string) => value ? new Date(value).toLocaleDateString(undefined, { month: "short", day: "numeric", year: "numeric" }) : "—";
 const dateTimeLabel = (value?: string) => value ? new Date(value).toLocaleString(undefined, { month: "short", day: "numeric", year: "numeric", hour: "numeric", minute: "2-digit" }) : "—";
 const statusClass = (status = "Pending") => `status status-${status.toLowerCase().replace(/[^a-z]/g, "")}`;
-const getError = (error: unknown) => {
-  if (typeof error === "object" && error && "response" in error) {
-    const data = (error as { response?: { data?: { error?: string; message?: string } } }).response?.data;
-    return data?.error ?? data?.message ?? "Something went wrong. Please try again.";
+const getError = (error: unknown): string => {
+  // Axios error with an HTTP response body
+  if (typeof error === "object" && error !== null && "response" in error) {
+    const data = (error as { response?: { data?: unknown } }).response?.data;
+    if (typeof data === "object" && data !== null) {
+      const errMsg = (data as { error?: unknown; message?: unknown }).error ?? (data as { error?: unknown; message?: unknown }).message;
+      if (typeof errMsg === "string") return errMsg;
+    }
+    if (typeof data === "string") return data;
+    return "Something went wrong. Please try again.";
+  }
+  // Standard JavaScript Error
+  if (error instanceof Error) return error.message;
+  // Plain object with a message property
+  if (typeof error === "object" && error !== null && "message" in error) {
+    const message = (error as { message?: unknown }).message;
+    if (typeof message === "string") return message;
   }
   return "Could not reach the service. Check your connection and try again.";
 };

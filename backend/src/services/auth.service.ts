@@ -58,5 +58,9 @@ export function publicUser(user: {
 }
 
 function signToken(userId: string, role: "user" | "admin") {
-  return jwt.sign({ role }, env.JWT_SECRET, { subject: userId, expiresIn: "8h" });
+  try {
+    return jwt.sign({ role }, env.JWT_SECRET, { subject: userId, expiresIn: "8h" });
+  } catch (error) {
+    throw new HttpError(500, "Unable to create authentication token. Please contact support.");
+  }
 }

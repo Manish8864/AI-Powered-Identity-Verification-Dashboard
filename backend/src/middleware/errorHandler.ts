@@ -37,6 +37,30 @@ export const errorHandler: ErrorRequestHandler = (error, _request, response, _ne
     return;
   }
 
-  console.error("Unhandled API error", error);
-  response.status(500).json({ error: "An unexpected server error occurred" });
+  const status = getErrorStatus(error);
+  const message = getErrorMessage(error);
+  console.error("Unhandled API error", { status, message, error });
+  response.status(status).json({ error: message });
 };
+
+function getErrorStatus(error: unknown): number {
+  if (error instanceof HttpError) return error.status;
+  if (typeof error === "object" && error !== null && "status" in error) {
+    const status = (error as { status?: number }).status;
+    if (typeof status === "number" && status >= 400 && status < 600) return status;
+  }
+  if (typeof error === "object" && error !== null && "statusCode" in error) {
+    const statusCode = (error as { statusCode?: number }).statusCode;
+    if (typeof statusCode === "number" && statusCode >= 400 && statusCode < 600) return statusCode;
+  }
+  return 500;
+}
+
+function getErrorMessage(error: unknown): string {
+  if (error instanceof Error) return error.message;
+  if (typeof error === "object" && error !== null && "message" in error) {
+    const message = (error as { message?: unknown }).message;
+    if (typeof message === "string") return message;
+  }
+  return String(error);
+}

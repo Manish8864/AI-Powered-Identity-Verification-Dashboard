@@ -66,3 +66,5 @@ app.use((_request, response) => {
   response.status(404).json({ error: "Route not found" });
 });
 app.use(errorHandler);
+
+export default app;
