@@ -1,6 +1,6 @@
 import cors from "cors";
 import express from "express";
-import * as helmet from "helmet";
+import helmet from "helmet";
 import { rateLimit } from "express-rate-limit";
 import mongoose from "mongoose";
 import { env } from "./config/env.js";
@@ -18,7 +18,7 @@ import { riskRouter } from "./routes/risk.routes.js";
 export const app = express();
 
 app.disable("x-powered-by");
-app.use(helmet.default ? helmet.default() : helmet());
+app.use(helmet());
 const allowedOrigins = [env.CLIENT_URL, "http://localhost:5173"].filter(Boolean);
 
 app.use(
