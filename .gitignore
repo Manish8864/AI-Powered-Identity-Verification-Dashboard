@@ -1,0 +1,15 @@
+node_modules/
+dist/
+dist-widget/
+coverage/
+.env
+.env.*
+!.env.example
+npm-debug.log*
+*.log
+*.tsbuildinfo
+.DS_Store
+Thumbs.db
+backend/private-uploads/
+backend/storage/
+
