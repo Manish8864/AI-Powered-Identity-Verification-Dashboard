@@ -1,6 +1,6 @@
 import cors from "cors";
 import express from "express";
-import helmet from "helmet";
+import * as helmet from "helmet";
 import { rateLimit } from "express-rate-limit";
 import mongoose from "mongoose";
 import { env } from "./config/env.js";
@@ -18,12 +18,21 @@ import { riskRouter } from "./routes/risk.routes.js";
 export const app = express();
 
 app.disable("x-powered-by");
-app.use(helmet());
+app.use(helmet.default ? helmet.default() : helmet());
+const allowedOrigins = [env.CLIENT_URL, "http://localhost:5173"].filter(Boolean);
+
 app.use(
   cors({
-    origin: env.CLIENT_URL,
+    origin: (origin, callback) => {
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error("Not allowed by CORS"));
+      }
+    },
     methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
     allowedHeaders: ["Content-Type", "Authorization"],
+    credentials: true,
   }),
 );
 app.use(express.json({ limit: "20kb" }));
