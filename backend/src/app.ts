@@ -1,3 +1,4 @@
+import { connectToDatabase } from "./config/database.js";
 import cors from "cors";
 import express from "express";
 // import helmet from "helmet"; // Temporarily disabled — helmet ESM import issue
@@ -18,6 +19,14 @@ import { riskRouter } from "./routes/risk.routes.js";
 export const app = express();
 
 app.disable("x-powered-by");
+app.use(async (_request, _response, next) => {
+  try {
+    await connectToDatabase();
+    next();
+  } catch (error) {
+    next(error);
+  }
+});
 // app.use(helmet()); // Temporarily disabled — helmet ESM import issue
 const allowedOrigins = [env.CLIENT_URL, "http://localhost:5173"].filter(Boolean);
 
