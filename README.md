@@ -88,6 +88,18 @@ npm run seed --workspace=backend
 The seeder creates an administrator and fictional customers, applications, and
 reviews. It does not create real identity records.
 
+## Admin Login
+
+Use the administrator account created by the seeder. Configure these in
+`backend/.env` before running the seed command:
+
+- Email: `admin@example.com`
+- Password: `change_this_password`
+
+These values come from the `ADMIN_EMAIL` and `ADMIN_PASSWORD` environment
+variables. Change them in `.env` before seeding if you want different admin
+credentials. Never commit real secrets to this repository.
+
 ## API overview
 
 All API routes are under `/api`.
