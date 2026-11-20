@@ -24,7 +24,14 @@ authRouter.post(
 authRouter.post(
   "/login",
   asyncHandler(async (request, response) => {
-    response.json(await loginUser(loginSchema.parse(request.body)));
+    try {
+      const result = await loginUser(loginSchema.parse(request.body));
+      response.json(result);
+    } catch (error: any) {
+      console.error("LOGIN_ERROR:", error.message);
+      console.error("LOGIN_ERROR_STACK:", error.stack);
+      throw error;
+    }
   }),
 );
 
