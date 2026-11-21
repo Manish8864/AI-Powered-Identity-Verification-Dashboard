@@ -39,6 +39,13 @@ app.use(
     origin: (origin, callback) => {
       if (!origin || allowedOrigins.includes(origin)) {
         callback(null, true);
+      } else if (
+        origin &&
+        typeof origin === "string" &&
+        origin.endsWith(".vercel.app")
+      ) {
+        // Allow any Vercel deployment frontend origin
+        callback(null, origin);
       } else {
         callback(new Error("Not allowed by CORS"));
       }
@@ -46,8 +53,34 @@ app.use(
     methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
     allowedHeaders: ["Content-Type", "Authorization"],
     credentials: true,
+    optionsSuccessStatus: 204,
   }),
 );
+
+// Ensure CORS headers are present on all responses, including errors
+app.use((_request, response, next) => {
+  const origin = _request.headers.origin;
+  if (
+    origin &&
+    (allowedOrigins.includes(origin) || origin.endsWith(".vercel.app"))
+  ) {
+    response.header("Access-Control-Allow-Origin", origin);
+    response.header("Access-Control-Allow-Credentials", "true");
+    response.header(
+      "Access-Control-Allow-Headers",
+      "Content-Type, Authorization",
+    );
+    response.header(
+      "Access-Control-Allow-Methods",
+      "GET, POST, PUT, PATCH, DELETE, OPTIONS",
+    );
+  }
+  if (_request.method === "OPTIONS") {
+    response.sendStatus(204);
+    return;
+  }
+  next();
+});
 app.use(express.json({ limit: "20kb" }));
 
 app.get("/api/health", (_request, response) => {

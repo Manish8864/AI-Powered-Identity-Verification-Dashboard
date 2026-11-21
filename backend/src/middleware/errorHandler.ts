@@ -1,4 +1,4 @@
-import type { ErrorRequestHandler } from "express";
+import type { ErrorRequestHandler, Request, Response } from "express";
 import { ZodError } from "zod";
 
 export class HttpError extends Error {
@@ -10,8 +10,28 @@ export class HttpError extends Error {
   }
 }
 
-export const errorHandler: ErrorRequestHandler = (error, _request, response, _next) => {
+function setCorsHeaders(request: Request, response: Response): void {
+  const origin = request.headers.origin;
+  if (
+    origin &&
+    (origin.endsWith(".vercel.app") || origin === "http://localhost:5173")
+  ) {
+    response.header("Access-Control-Allow-Origin", origin);
+    response.header("Access-Control-Allow-Credentials", "true");
+    response.header(
+      "Access-Control-Allow-Headers",
+      "Content-Type, Authorization",
+    );
+    response.header(
+      "Access-Control-Allow-Methods",
+      "GET, POST, PUT, PATCH, DELETE, OPTIONS",
+    );
+  }
+}
+
+export const errorHandler: ErrorRequestHandler = (error, request, response, _next) => {
   if (error instanceof ZodError) {
+    setCorsHeaders(request, response);
     response.status(400).json({
       error: "Request validation failed",
       details: error.issues.map((issue) => ({
@@ -23,6 +43,7 @@ export const errorHandler: ErrorRequestHandler = (error, _request, response, _ne
   }
 
   if (error instanceof HttpError) {
+    setCorsHeaders(request, response);
     response.status(error.status).json({ error: error.message });
     return;
   }
@@ -33,6 +54,7 @@ export const errorHandler: ErrorRequestHandler = (error, _request, response, _ne
     "name" in error &&
     error.name === "MulterError"
   ) {
+    setCorsHeaders(request, response);
     response.status(400).json({ error: "Upload rejected. Check file size and form fields." });
     return;
   }
@@ -40,6 +62,7 @@ export const errorHandler: ErrorRequestHandler = (error, _request, response, _ne
   const status = getErrorStatus(error);
   const message = getErrorMessage(error);
   console.error("Unhandled API error", { status, message, error });
+  setCorsHeaders(request, response);
   response.status(status).json({ error: message });
 };
 
