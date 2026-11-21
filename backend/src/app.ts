@@ -37,14 +37,14 @@ const allowedOrigins = [
 app.use(
   cors({
     origin: (origin, callback) => {
-      if (!origin || allowedOrigins.includes(origin)) {
+      if (!origin) {
         callback(null, true);
-      } else if (
-        origin &&
-        typeof origin === "string" &&
-        origin.endsWith(".vercel.app")
-      ) {
-        // Allow any Vercel deployment frontend origin
+        return;
+      }
+      const isAllowed =
+        allowedOrigins.includes(origin) || origin.endsWith(".vercel.app");
+      if (isAllowed) {
+        // Echo back the exact origin (required when credentials: true)
         callback(null, origin);
       } else {
         callback(new Error("Not allowed by CORS"));
